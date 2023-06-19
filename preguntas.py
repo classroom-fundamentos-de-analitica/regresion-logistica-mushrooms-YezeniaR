@@ -60,11 +60,11 @@ import pandas as pd
 
 
 def pregunta_01():
-    df = pd.read_csv('mushrooms.csv')
-    df.drop('veil-type', axis=1, inplace=True)
+    df = pd.read_csv('mushrooms.csv', sep= ",")
+    df.drop(columns=['veil_type'],axis=1,inplace=True)
     y = df['type']
     X = df.copy()
-    X.drop('type', axis=1, inplace=True)
+    X.drop(inplace = True, labels = ["type"], axis = 1)
     return X, y
 
 
@@ -74,7 +74,7 @@ def pregunta_02():
     X_train, X_test, y_train, y_test = train_test_split(
         X,
         y,
-        test_size=0.2,
+        test_size=50,
         random_state=123,
     )
     return X_train, X_test, y_train, y_test
@@ -87,7 +87,7 @@ def pregunta_03():
     X_train, _, y_train, _ = pregunta_02()
     pipeline = Pipeline(
         steps=[
-            ("encoder", OneHotEncoder()),
+            ("OneHotEncoder", OneHotEncoder()),
             ("logistic_regression", LogisticRegressionCV(Cs=10)),
         ],
     )
@@ -95,16 +95,20 @@ def pregunta_03():
     return pipeline
 
 def pregunta_04():
+
     from sklearn.metrics import confusion_matrix
+
     pipeline = pregunta_03()
     X_train, X_test, y_train, y_test = pregunta_02()
+
     cfm_train = confusion_matrix(
-        y_true=y_train,
-        y_pred=pipeline.predict(X_train),
+        y_true = y_train,
+        y_pred = pipeline.predict(X_train),
     )
 
     cfm_test = confusion_matrix(
-        y_true=y_test,
-        y_pred=pipeline.predict(X_test),
+        y_true = y_test,
+        y_pred = pipeline.predict(X_test),
     )
+
     return cfm_train, cfm_test
